@@ -1,0 +1,63 @@
+{
+  "name": "relationship",
+  "version": "1.0.0",
+  "description": "MEDALLIA Relationship",
+  "private": true,
+  "scripts": {
+    "start": "PORT=3001 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "node_modules/.bin/eslint ./server/app.js ./server/main.js ./server/routes/* ./server/components/* ./src/components/* --ext .jsx,.js",
+    "server": "DEBUG=relationship nodemon server/main.js",
+    "concurrently": "concurrently --kill-others-on-fail \"npm run server\" \"npm start\"",
+    "deploy": "NODE_ENV=production node server/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andiclone/vehiculos.git"
+  },
+  "author": "Andres Alejandre",
+  "dependencies": {
+    "axios": "^0.18.1",
+    "carbon-components": "^9.91.4",
+    "carbon-components-react": "^6.115.5",
+    "carbon-icons": "^7.0.7",
+    "debug": "^4.1.1",
+    "eslint": "^5.16.0",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "formidable": "^1.2.1",
+    "helmet": "^3.15.0",
+    "morgan": "^1.9.1",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.0.1",
+    "sweetalert": "^2.1.2",
+    "typescript": "^3.4.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "concurrently": "^3.6.1",
+    "eslint-config-fbjs": "^2.0.1",
+    "eslint-plugin-babel": "^4.1.2",
+    "eslint-plugin-compat": "^2.4.0",
+    "eslint-plugin-flowtype": "^2.46.3",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "eslint-plugin-relay": "^0.0.21",
+    "nock": "^10.0.6",
+    "nodemon": "^1.18.10"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "proxy": "https://localhost:8001/",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

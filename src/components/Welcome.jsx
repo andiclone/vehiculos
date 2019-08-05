@@ -13,13 +13,12 @@ class Welcome extends Component {
     render() {
         return (
             <div className="welcome-message">
-                <span className="bold-title">MEDALLIA</span> <span className="bold-titl2">Relationship</span>
+                <span className="bold-title">RENT-A-CAR</span> <span className="bold-titl2">GDL</span>
                 <br/> 
                 <h3 className="bold-title3">
-                This page is for submission of Invitation Files for Medallia Relationship Implementation
+                Bienvenido a rent-a-car Gdl, el mejor sitio para rentar autos desde la comodidad de tu hogar.
                     {
-                        (process.env.NODE_ENV !== 'production' || process.env.REACT_APP_ENV_NAME === 'DEV' || process.env.REACT_APP_ENV_NAME === 'TEST') &&
-                    <span> in <span style={ { fontWeight: 'bold' } }>{ process.env.REACT_APP_ENV_NAME || 'DEV'}</span> mode only.</span>
+                        (process.env.NODE_ENV !== 'production' || process.env.REACT_APP_ENV_NAME === 'DEV' || process.env.REACT_APP_ENV_NAME === 'TEST')
                     }
                 </h3>
             </div>

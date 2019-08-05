@@ -1,14 +1,22 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
 import '../styles/App.css';
-/* import {
-    Button,
-} from 'carbon-components-react'; */
+import {
+    SelectItemGroup,
+    SelectItem,
+    DatePicker,
+    DatePickerInput,
+    TimePicker,
+    TimePickerSelect,
+} from 'carbon-components-react';
 import axios, { post } from 'axios';
 import swal from 'sweetalert';
 import Loading from './Loading';
 
 let ibmEmailRegex = /^([-a-z0-9~!$%^&amp;*_=+}{'?]+\.)*([-a-z0-9~!$%^&amp;*_=+}{'?])+(@)([-a-z0-9~!$%^&amp;*_=+}{'?]+\.)?(ibm.com)$/i;
+
+let minDate = new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
+let maxDate = new Date().getDate() + '/' + (new Date().getMonth() + 2) + '/' + new Date().getFullYear();
 
 const debug = require('debug')('relationship');
 
@@ -31,12 +39,12 @@ class Form extends Component {
             email: '',
             resultStatus: 'failed',
             app_view: APP_VIEWS.INPUT,
+            
             data: {},
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkIBMEmail = this.checkIBMEmail.bind(this);
         this.handleChange = this.handleChange.bind(this);
-
     }
 
     componentDidMount() {
@@ -248,8 +256,9 @@ class Form extends Component {
 
     handleChange = event => {
         this.setState({ email: event.target.value });
+        
     }
-
+    
     render() {
         switch (this.state.app_view) {
             default:
@@ -260,17 +269,160 @@ class Form extends Component {
                         <div className="relationship-form-flex">
                             <div className="relationship-form-inside">
                                 <div className="relationship-form-column">
-                                    <div className="mail-form-panel">
-                                        <p className="form-mail" >
-                                            Please ensure that your Invite File contains all required fields as defined in the MEDALLIA Invitation File Data Dictionary 
+                                    <div className="mail-datos-panel">
+                                        <p className="form-datos" >
+                                            Por favor seleccione una sucursal
                                         </p>
+                                        <div className="dropdown-renta">
+                                            <div className="bx--form-item">
+                                                <select
+                                                    //onChange={ anonymous }
+                                                    defaultValue="placeholder-item"
+                                                    id="select-1"
+                                                    className="bx--select-input"
+                                                    disabled={ null }
+                                                    data-invalid={ null }
+                                                >
+                                                    <SelectItem
+                                                        disabled
+                                                        hidden
+                                                        value="placeholder-item"
+                                                        text="Sucursal"
+                                                    />
+                                                    <SelectItemGroup label="ZMG">
+                                                        <SelectItem value="chapalita" text="Chapalita" />
+                                                        <SelectItem value="gdlcentro" text="Guadalajara Centro" />
+                                                        <SelectItem value="zapopan" text="Zapopan" />
+                                                    </SelectItemGroup>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <p className="form-datos" >
+                                            Por favor ingrese su direccion
+                                        </p>
+                                        <input className="input-renta"></input>
+                                        <p className="form-datos" >
+                                            Por favor seleccione el estado
+                                        </p>
+                                        <div className="dropdown-renta">
+                                            <div className="bx--form-item">
+                                                <select
+                                                    //onChange={ anonymous }
+                                                    defaultValue="placeholder-item"
+                                                    id="select-1"
+                                                    className="bx--select-input"
+                                                    disabled={ null }
+                                                    data-invalid={ null }
+                                                >
+                                                    <SelectItem
+                                                        disabled
+                                                        hidden
+                                                        value="placeholder-item"
+                                                        text="Estado"
+                                                    />
+                                                    <SelectItemGroup label="Mexico">
+                                                        <SelectItem value="aguascalientes" text="Aguascalientes" />
+                                                        <SelectItem value="bjn" text="Baja California" />
+                                                        <SelectItem value="bjs" text="Baja California Sur" />
+                                                        <SelectItem value="campeche" text="Campeche" />
+                                                        <SelectItem value="chiapas" text="Chiapas" />
+                                                        <SelectItem value="chihuahua" text="Chihuahua" />
+                                                        <SelectItem value="coahuila" text="Coahuila de Zaragoza" />
+                                                        <SelectItem value="colima" text="Colima" />
+                                                        <SelectItem value="durango" text="Durango" />
+                                                        <SelectItem value="cdmx" text="Estado de México" />
+                                                        <SelectItem value="guanajuato" text="Guanajuato" />
+                                                        <SelectItem value="guerrero" text="Guerrero" />
+                                                        <SelectItem value="hidalgo" text="Hidalgo" />
+                                                        <SelectItem value="jalisco" text="Jalisco" />
+                                                        <SelectItem value="michoacan" text="Michoacán de Ocampo" />
+                                                        <SelectItem value="morelos" text="Morelos" />
+                                                        <SelectItem value="nayarit" text="Nayarit" />
+                                                        <SelectItem value="nuevo_leon" text="Nuevo León" />
+                                                        <SelectItem value="oaxaca" text="Oaxaca" />
+                                                        <SelectItem value="puebla" text="Puebla" />
+                                                        <SelectItem value="queretaro" text="Querétaro" />
+                                                        <SelectItem value="quintana_roo" text="Quintana Roo" />
+                                                        <SelectItem value="slp" text="San Luis Potosí" />
+                                                        <SelectItem value="sinaloa" text="Sinaloa" />
+                                                        <SelectItem value="sonora" text="Sonora" />
+                                                        <SelectItem value="tabasco" text="Tabasco" />
+                                                        <SelectItem value="tamaulipas" text="Tamaulipas" />
+                                                        <SelectItem value="tlaxcala" text="Tlaxcala" />
+                                                        <SelectItem value="veracruz de Ignacio de la Llave" text="Veracruz de Ignacio de la Llave" />
+                                                        <SelectItem value="yucatan" text="Yucatán" />
+                                                        <SelectItem value="zacatecas" text="Zacatecas" />
+                                                    </SelectItemGroup>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <p className="form-datos" >
+                                            Por favor seleccione la fecha de inicio y fin
+                                        </p>
+                                        <div className="fecha-input">
+                                            <DatePicker
+                                                id="date-picker"
+                                                //onChange={ anonymous }
+                                                //onClose={ anonymous }
+                                                minDate={ minDate }
+                                                maxDate={ maxDate }
+                                                datePickerType="range"
+                                                locale="es"
+                                                dateFormat="d/m/Y"
+                                            >
+                                                <DatePickerInput
+                                                    id="date-picker-input-id"
+                                                    className="some-class"
+                                                    pattern="d{1,2}/d{4}"
+                                                    placeholder="dd/mm/yyyy"
+                                                    invalidText="Ingresa una fecha"
+                                                    //onClick={ anonymous }
+                                                    //onChange={ anonymous }
+                                                />
+                                                <DatePickerInput
+                                                    id="date-picker-input-id-2"
+                                                    className="some-class"
+                                                    pattern="d{1,2}/d{4}"
+                                                    placeholder="dd/mm/yyyy"
+                                                    invalidText="Ingresa una fecha"
+                                                    //onClick={ anonymous }
+                                                    //onChange={ anonymous }
+                                                />
+                                            </DatePicker>
+                                        </div>
+                                        <p className="form-datos">
+                                            Por favor selecciona una hora de entrega y de devolucion
+                                        </p>
+                                        <div className="hora-input">
+                                            <TimePicker
+                                                //id="time-picker"
+                                                hideLabel={ false }
+                                                invalidText="Ingresa una hora"
+                                                /* onClick={ anonymous }
+                                                onChange={ anonymous }
+                                                onBlur={ anonymous } */
+                                            >
+                                                <TimePickerSelect id="time-picker-select-1" labelText="Selecciona una hora">
+                                                    <SelectItem value="AM" text="AM" />
+                                                    <SelectItem value="PM" text="PM" />
+                                                </TimePickerSelect>
+                                            </TimePicker>
+                                            <TimePicker
+                                                id="time-picker"
+                                                hideLabel={ false }
+                                                invalidText="Ingresa una hora"
+                                                /* onClick={ anonymous }
+                                                onChange={ anonymous }
+                                                onBlur={ anonymous } */
+                                            >
+                                                <TimePickerSelect id="time-picker-select-2" labelText="Selecciona una hora">
+                                                    <SelectItem value="AM" text="AM" />
+                                                    <SelectItem value="PM" text="PM" />
+                                                </TimePickerSelect>
+                                            </TimePicker>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="help-contact">
-                                <p className="form-contact">
-                                    Having trouble? You can contact us in our Slack Channel <a className="form-mail" href="https://ibm-go.slack.com/messages/CLEH289GA/ " target="_blank" rel="noopener noreferrer"><svg width="16" height="16" className="c-nav--footer__svgicon c-slackhash" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><g fill="none" fillRule="evenodd"><path d="M19.712.133a5.381 5.381 0 0 0-5.376 5.387 5.381 5.381 0 0 0 5.376 5.386h5.376V5.52A5.381 5.381 0 0 0 19.712.133m0 14.365H5.376A5.381 5.381 0 0 0 0 19.884a5.381 5.381 0 0 0 5.376 5.387h14.336a5.381 5.381 0 0 0 5.376-5.387 5.381 5.381 0 0 0-5.376-5.386" fill="#36C5F0"></path><path d="M53.76 19.884a5.381 5.381 0 0 0-5.376-5.386 5.381 5.381 0 0 0-5.376 5.386v5.387h5.376a5.381 5.381 0 0 0 5.376-5.387m-14.336 0V5.52A5.381 5.381 0 0 0 34.048.133a5.381 5.381 0 0 0-5.376 5.387v14.364a5.381 5.381 0 0 0 5.376 5.387 5.381 5.381 0 0 0 5.376-5.387" fill="#2EB67D"></path><path d="M34.048 54a5.381 5.381 0 0 0 5.376-5.387 5.381 5.381 0 0 0-5.376-5.386h-5.376v5.386A5.381 5.381 0 0 0 34.048 54m0-14.365h14.336a5.381 5.381 0 0 0 5.376-5.386 5.381 5.381 0 0 0-5.376-5.387H34.048a5.381 5.381 0 0 0-5.376 5.387 5.381 5.381 0 0 0 5.376 5.386" fill="#ECB22E"></path><path d="M0 34.249a5.381 5.381 0 0 0 5.376 5.386 5.381 5.381 0 0 0 5.376-5.386v-5.387H5.376A5.381 5.381 0 0 0 0 34.25m14.336-.001v14.364A5.381 5.381 0 0 0 19.712 54a5.381 5.381 0 0 0 5.376-5.387V34.25a5.381 5.381 0 0 0-5.376-5.387 5.381 5.381 0 0 0-5.376 5.387" fill="#E01E5A"></path></g></svg>#rel-file-setup</a> under NPS Implementation.
-                                </p>
                             </div>
                         </div>
                     </div>

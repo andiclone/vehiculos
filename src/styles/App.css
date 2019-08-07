@@ -28,7 +28,7 @@ h2, h4 {
     margin: 2rem 0 2rem 0 !important;
 }
 
-.relationship-container {
+.rentacar-container {
     order: 3;
     display: flex;
     flex-direction: column;
@@ -174,7 +174,7 @@ p.form-contact {
     margin-top: 0.7rem;
 }
 
-.relationship-form {
+.rentacar-form {
     overflow-y: auto !important;
     overflow-x: hidden !important;
     opacity: 0.73;
@@ -188,14 +188,14 @@ p.form-contact {
     height: 100%;
 }
 
-.relationship-form-flex {
+.rentacar-form-flex {
     display: flex;
     flex-direction: column;
     flex: 0 0 75%;
     height: 100%;
 }
 
-.relationship-form-inside {
+.rentacar-form-inside {
     display: flex;
     flex-direction: row;
     flex: 0 0 90%;
@@ -206,9 +206,44 @@ p.form-contact {
     flex: 0 0 10%;
 }
 
-.relationship-form-column {
+.rentacar-form-column {
     order: 1;
     flex: 0 0 50%;
+}
+
+.car-model {
+    display: flex;
+    flex-direction: column;
+    order: 1;
+    flex: 0 0 50%;
+}
+
+.car-name {
+    flex-grow: 1;
+    margin-top: 4.5rem;
+    margin-right: 2rem;
+}
+
+div.car-image{
+    flex-grow: 2;
+    margin: 0.5rem 2rem 0.5rem 0;
+}
+
+.car-image > img {
+    width: 100%;
+    height: auto;
+    max-height: 80%;
+}
+
+.submitRentar {
+    flex-grow: 1;
+    margin-right: 2rem;
+}
+
+.submit_button {
+    float: right;
+    color: white !important;
+    border-color: white !important;
 }
 
 .form-title {
@@ -228,18 +263,6 @@ p.form-contact {
 
 .form-label {
     color: white !important;
-}
-
-.submit_button {
-    float: left;
-    margin: auto;
-    width: 10rem;
-    margin-top: 1em;
-}
-
-.submit_button_div {
-    display: flex;
-    align-items: center;
 }
 
 .align-button {
@@ -308,13 +331,13 @@ p.form-contact {
 }
 
 @media only screen and (min-width: 48em) and (max-width: 100em) {
-    .relationship-form {
+    .rentacar-form {
         min-width: 80%;
     }
 }
 
 @media only screen and (min-width: 100em) {
-    .relationship-form {
+    .rentacar-form {
         min-width: 80%;
     }
 }

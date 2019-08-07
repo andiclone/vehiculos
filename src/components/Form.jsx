@@ -8,49 +8,110 @@ import {
     DatePickerInput,
     TimePicker,
     TimePickerSelect,
+    SelectSkeleton,
+    Button,
 } from 'carbon-components-react';
 import axios, { post } from 'axios';
 import swal from 'sweetalert';
 import Loading from './Loading';
 
-let ibmEmailRegex = /^([-a-z0-9~!$%^&amp;*_=+}{'?]+\.)*([-a-z0-9~!$%^&amp;*_=+}{'?])+(@)([-a-z0-9~!$%^&amp;*_=+}{'?]+\.)?(ibm.com)$/i;
-
-let minDate = new Date().getDate() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
+let minDate = (new Date().getDate() + 1) + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
 let maxDate = new Date().getDate() + '/' + (new Date().getMonth() + 2) + '/' + new Date().getFullYear();
-
-const debug = require('debug')('relationship');
 
 const APP_VIEWS = {
     INPUT: 'INPUT',
     LOADING: 'LOADING',
 };
 
+const debug = require('debug')('rentacar');
+
+const DisplayImage = ({ selectedOptionCar }) => {
+    switch (selectedOptionCar) {
+        default:
+            return <img src="http://chanhassenautoplex.com/wp-content/uploads/2018/01/CarsAndCaves106-2-of-18.jpg" alt="carros"/>;
+        case 'yaris':
+            return <img src="https://i.blogs.es/0f9d7d/toyota-yaris-r-2018_9/450_1000.jpg" alt="yaris"/>;
+        case 'corolla':
+            return <img src="https://www.cstatic-images.com/car-pictures/xl/usc70toc041g021001.png" alt="corolla"/>;
+        case 'sienna':
+            return <img src="https://www.cstatic-images.com/car-pictures/xl/usc80tov111a021001.png" alt="sienna"/>;
+    }
+};
+
+const DisplayCars = ({ selectedOptionSuc, cars }) => {
+    switch (selectedOptionSuc) {
+        default:
+            return <SelectItemGroup label="Selecciona una sucursal">
+                <SelectSkeleton/>
+            </SelectItemGroup>;
+        case 'chapalita':
+            return <SelectItemGroup label="chapalita">
+                {
+                    cars.filter((i) => i < 3).forEach(cars =>
+                        <SelectItem value={ cars.id }
+                            text={ `${cars.name} ${cars.modelo}` }/>)
+                }
+            </SelectItemGroup>;
+        case 'gdlcentro':
+            return <SelectItemGroup label="chapalita">
+                {
+                    cars.filter((i) => i < 3).forEach(cars =>
+                        <SelectItem value={ cars.id }
+                            text={ `${cars.name} ${cars.modelo}` }/>)
+                }
+            </SelectItemGroup>;
+        case 'zapopan':
+            return <SelectItemGroup label="zapopan">
+                {
+                    cars.filter((e, i) => i >= 6).forEach(cars =>
+                        <SelectItem value={ cars.id }
+                            text={ `${cars.name} ${cars.modelo}` }/>)
+                }
+            </SelectItemGroup>;
+    }
+};
+
 class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filesPreview: [],
-            filesToBeSent: [],
-            printcount: 1,
-            file: '',
-            response: '',
-            invalidEmailBool: false,
-            invalidEmail: false,
-            email: '',
-            resultStatus: 'failed',
             app_view: APP_VIEWS.INPUT,
-            
-            data: {},
+            sucs: [],
+            cars: [],
+            cars_by_suc: [],
         };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.checkIBMEmail = this.checkIBMEmail.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
+        const url = '/getAllInfo';
+        axios.get(url)
+            .then(res => {
+                // Expected result
+                /* data = {
+                    sucs: [],
+                    cars: [],
+                    cars_by_suc: [],
+                }; */
+                let data = res.data.data;
+                this.setState({
+                    // response: res.data.message,
+                    ...data,
+                    isLoading: false,
+                });
+            })
+            .catch(err => {
+                // handle error
+                console.warn(err);
+                this.setState({
+                    response: err.message,
+                });
+            });
+
         this.callApi()
             .then(res => this.setState({ response: res.express }))
-            .catch(err => debug(err));
+            .catch(err => console.log(err));
+
     }
 
     callApi = async () => {
@@ -60,15 +121,19 @@ class Form extends Component {
         return body;
     };
 
+    onCarChange(event) {
+        this.setState({ selectedOptionCar: event.target.value });
+    }
 
+    onSucursalChange(event) {
+        this.setState({ selectedOptionSuc: event.target.value });
+    }
 
-    handleSubmit = event => {
-        event.preventDefault();
+    handleSubmit() {
+
         const url = '/';
         const formData = new FormData();
-        formData.append('file', new Blob(this.state.filesToBeSent[0]), 'file.csv');
         const config = {
-            timeout: 300000,
             headers: {
                 'content-type': 'multipart/form-data',
             },
@@ -88,119 +153,15 @@ class Form extends Component {
                         break;
                     case 'system_error':
                         view = APP_VIEWS.INPUT;
-                        this.setState({
-                            filesToBeSent: [],
-                            invalidEmail: true,
-                            filesPreview: [],
-                        });
                         swal('Whoops', 'There was an error, please try again. If this error persists, please contact the site administrator.', 'error');
                         break;
                     case 'fail':
                         view = APP_VIEWS.INPUT;
-                        swal('Whoops', res.data.messages.message, 'error');
+                        swal('Whoops', 'process failed', 'error');
                         break;
-                    /* case 'fixed':
-                        view = APP_VIEWS.FIXED;
-                        break;  */
-                    case 'SQL_injection':
-                        view = APP_VIEWS.INPUT;
-                        swal({
-                            title: res.data.data.USFED.MSG,
-                            icon: 'error',
-                        });
-                        break;
-                    /* case 'fail':
-                        view = APP_VIEWS.DNS;
-                        break; */
                     case 'success':
-                        let rejected_data = res.data.rejected; //agregar validacion front
-                        let usfedMessage = res.data.data.USFED.MSG;
-                        let usfed_hash_id = usfedMessage[Object.keys(usfedMessage)[3]];
-                        let usfedRejected = usfedMessage[Object.keys(usfedMessage)[2]];
-                        let usfedDNS = usfedMessage[Object.keys(usfedMessage)[1]];
-                        let usfedProcessed = usfedMessage[Object.keys(usfedMessage)[0]];
-                        let wwMessage = res.data.data.WW.MSG;
-                        let ww_hash_id = wwMessage[Object.keys(wwMessage)[3]];
-                        let wwRejected = wwMessage[Object.keys(wwMessage)[2]];
-                        let wwDNS = wwMessage[Object.keys(wwMessage)[1]];
-                        let wwProcessed = wwMessage[Object.keys(wwMessage)[0]];
                         view = APP_VIEWS.INPUT;
-                        //this is the Excel
-                        this.action(res.data.rejected, res.data.data.USFED.DNS, res.data.data.USFED.FIXED, res.data.data.WW.DNS, res.data.data.WW.FIXED);
-                        swal('Awesome!', 'Your file has ' + 
-                        rejected_data.length + ' records with errors in the file, ' +
-                        usfedRejected + ' rejected records and ' + usfedDNS + ' caught by DNS and ' + usfedProcessed + ' processed records for US Federal. And for WW ' + 
-                        wwRejected + ' rejected records and ' + wwDNS + ' caught by DNS and ' + wwProcessed + ' processed records.', 'success',
-                        {
-                            buttons: ['Cancel', 'Send!'],
-                        })
-                            .then((send) => {
-                                view = APP_VIEWS.LOADING;
-                                this.setState({
-                                    ...this.setState,
-                                    data: res.data,
-                                    app_view: view,
-                                });
-                                let url = '/send_invite/';
-                                let confirm = send ? 'True' : '';
-                                axios.post(url, {
-                                    WW: { send: confirm, id: ww_hash_id }, 
-                                    USFED: { send: confirm, id: usfed_hash_id },
-                                })
-                                    .then(() => {
-                                        view = APP_VIEWS.INPUT;
-                                        // handle success
-                                        let data = { ...this.state.data };
-                                        this.setState({
-                                            filesToBeSent: [],
-                                            invalidEmail: true,
-                                            invalidEmailBool: false,
-                                            filesPreview: [],
-                                            app_view: view,
-                                            data: data,
-                                        });
-                                        if (confirm === 'True') {
-                                            let fileName = document.createElement('p');
-                                            fileName.innerHTML = 'Files ibm_rel_invite_file_WW_' + ww_hash_id + ' and ibm_rel_invite_file_USFED_' + usfed_hash_id;
-                                            let alertTitle = document.createElement('p');
-                                            let wwProcessed = wwMessage[Object.keys(wwMessage)[0]];
-                                            alertTitle.innerHTML = 'Awesome!! ' + usfedProcessed +
-                                                ' USFED records and ' + wwProcessed + ' WW records have been uploaded to Medallia Relationship';
-                                            swal(
-                                                {
-                                                    title: alertTitle.innerHTML,
-                                                    content: fileName,
-                                                    icon: 'success',
-                                                    className: 'swal-final',
-                                                }
-                                            );
-                                        } else {
-                                            swal('Your file has been discarded', '',
-                                                {
-                                                    icon: 'warning',
-                                                }
-                                            );
-                                            //this.action().bind(this);
-                                        }
-                                    })
-                                    .catch(err => {
-                                        view = APP_VIEWS.INPUT;
-                                        // handle error
-                                        debug(err);
-                                        this.setState({
-                                            response: err.message,
-                                            app_view: view,
-                                            filesToBeSent: [],
-                                            invalidEmail: true,
-                                            filesPreview: [],
-                                        });
-                                        swal('Bad bad bad...', '',
-                                            {
-                                                icon: 'error',
-                                            }
-                                        );
-                                    });
-                            });
+                        swal('Awesome!', 'Your reservation has been made!');
                         break;
                 } // Uno u otro
                 this.setState({
@@ -211,14 +172,10 @@ class Form extends Component {
             })
             .catch((err) => {
                 let view;
-                console.error('error form: ', err);
+                debug('error form: ', err);
                 view = APP_VIEWS.INPUT;
                 this.setState({
-                    response: err.message,
                     app_view: view,
-                    filesToBeSent: [],
-                    invalidEmail: true,
-                    filesPreview: [],
                 });
                 swal('The process is taking too long, please try again later.', '',
                     {
@@ -228,47 +185,16 @@ class Form extends Component {
             });
     }
 
-    handleFileReady(file) {
-        this.setState({
-            filesToBeSent: file,
-        });
-    }
-
-    checkIBMEmail(event) {
-        if (ibmEmailRegex.test(event.target.value)) {
-            //todo enableSubmit
-            this.setState({
-                ...this.state,
-                invalidEmail: false,
-                invalidEmailBool: true,
-                email: event.target.value,
-            });
-        } else {
-            this.setState({
-                ...this.state,
-                invalidEmail: true,
-                invalidEmailBool: false,
-            });
-        }
-    }
-
-
-
-    handleChange = event => {
-        this.setState({ email: event.target.value });
-        
-    }
-    
     render() {
         switch (this.state.app_view) {
             default:
                 return <div></div>;
             case APP_VIEWS.INPUT:
                 return (
-                    <div className="relationship-form">
-                        <div className="relationship-form-flex">
-                            <div className="relationship-form-inside">
-                                <div className="relationship-form-column">
+                    <div className="rentacar-form">
+                        <div className="rentacar-form-flex">
+                            <div className="rentacar-form-inside">
+                                <div className="rentacar-form-column">
                                     <div className="mail-datos-panel">
                                         <p className="form-datos" >
                                             Por favor seleccione una sucursal
@@ -276,7 +202,7 @@ class Form extends Component {
                                         <div className="dropdown-renta">
                                             <div className="bx--form-item">
                                                 <select
-                                                    //onChange={ anonymous }
+                                                    onChange={ this.onSucursalChange.bind(this) }
                                                     defaultValue="placeholder-item"
                                                     id="select-1"
                                                     className="bx--select-input"
@@ -290,9 +216,9 @@ class Form extends Component {
                                                         text="Sucursal"
                                                     />
                                                     <SelectItemGroup label="ZMG">
-                                                        <SelectItem value="chapalita" text="Chapalita" />
-                                                        <SelectItem value="gdlcentro" text="Guadalajara Centro" />
-                                                        <SelectItem value="zapopan" text="Zapopan" />
+                                                        <SelectItem value="chapalita" text={ this.state.sucs.map(sucs => sucs.name)[0] } />
+                                                        <SelectItem value="gdlcentro" text={ this.state.sucs.map(sucs => sucs.name)[1] } />
+                                                        <SelectItem value="zapopan" text={ this.state.sucs.map(sucs => sucs.name)[2] } />
                                                     </SelectItemGroup>
                                                 </select>
                                             </div>
@@ -421,6 +347,35 @@ class Form extends Component {
                                                 </TimePickerSelect>
                                             </TimePicker>
                                         </div>
+                                    </div>
+                                </div>
+                                <div className="car-model">
+                                    <div className="car-name">
+                                        <select
+                                            onChange={ this.onCarChange.bind(this) }
+                                            defaultValue="placeholder-item"
+                                            id="select-1"
+                                            className="bx--select-input"
+                                            disabled={ null }
+                                            data-invalid={ null }
+                                        >
+                                            <SelectItem
+                                                disabled
+                                                hidden
+                                                value="placeholder-item"
+                                                text="Modelo"
+                                            />
+                                            <DisplayCars selectedOptionSuc={ this.state.selectedOptionSuc } cars={ this.state.cars } />
+                                        </select>
+                                    </div>
+                                    <div className="car-image">
+                                        <DisplayImage selectedOptionCar={ this.state.selectedOptionCar } />
+                                    </div>
+                                    <div className="submitRentar">
+                                        <Button className="submit_button"
+                                            kind="tertiary" onClick={ (event) => this.handleSubmit(event) } >
+                                                Rentar!
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

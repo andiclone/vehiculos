@@ -1,6 +1,6 @@
 {
-  "short_name": "Relationship App",
-  "name": "Create Relationship App Sample",
+  "short_name": "Rentacar App",
+  "name": "Create Rentacar App Sample",
   "icons": [{
       "src": "/android-chrome-192x192.png",
       "sizes": "192x192",

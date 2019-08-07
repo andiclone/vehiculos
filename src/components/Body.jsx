@@ -24,7 +24,7 @@ class Body extends Component {
     render() {
     
         return (
-            <div className="relationship-container">
+            <div className="rentacar-container">
                 {this.state.messageIsShown}
                 <Welcome/>
                 <Form/>

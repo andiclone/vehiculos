@@ -13,6 +13,7 @@ import {
 import axios, { post } from 'axios';
 import swal from 'sweetalert';
 import Loading from './Loading';
+//import Reservations from './Reservations';
 import moment from 'moment';
 
 let minDate = (new Date().getDate() + 1) + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
@@ -21,6 +22,7 @@ let maxDate = new Date().getDate() + '/' + (new Date().getMonth() + 2) + '/' + n
 const APP_VIEWS = {
     INPUT: 'INPUT',
     LOADING: 'LOADING',
+    //RESERVATIONS: 'RESERVATIONS',
 };
 
 const debug = require('debug')('rentacar');
@@ -29,23 +31,23 @@ const DisplayImage = ({ selectedOptionCar }) => {
     switch (selectedOptionCar) {
         default:
             return <img src="http://chanhassenautoplex.com/wp-content/uploads/2018/01/CarsAndCaves106-2-of-18.jpg" alt="carros"/>;
-        case 'Yaris R':
+        case 'Yaris R 2019':
             return <img src="https://i.blogs.es/0f9d7d/toyota-yaris-r-2018_9/450_1000.jpg" alt="yaris"/>;
-        case 'Corolla':
+        case 'Corolla 2019':
             return <img src="https://www.cstatic-images.com/car-pictures/xl/usc70toc041g021001.png" alt="corolla"/>;
-        case 'Sienna':
+        case 'Sienna 2019':
             return <img src="https://www.cstatic-images.com/car-pictures/xl/usc80tov111a021001.png" alt="sienna"/>;
-        case 'Spark':
+        case 'Spark 2017':
             return <img src="https://www.cstatic-images.com/car-pictures/xl/usc90chc331c021001.png" alt="spark"/>;
-        case 'City':
+        case 'City 2016':
             return <img src="https://acs2.blob.core.windows.net/imgcatalogo/l/VA_ba7aadb2a6c94e93962c087db15f0f97.jpg" alt="city"/>;
-        case 'Mazda 3':
+        case 'Mazda 3 2018':
             return <img src="https://www.mazda.mx/siteassets/mazda-mx/mycos-2019/mazda-3-sedan/vlp/versiones/mazda-3-sedan-vlp-versiones-i.jpg" alt="mazda3"/>;
-        case 'Tacoma':
+        case 'Tacoma 2010':
             return <img src="https://www.cstatic-images.com/car-pictures/xl/usc70tot096e121001.png" alt="yaris"/>;
-        case 'HR-V':
+        case 'HR-V 2019':
             return <img src="https://d1hv7ee95zft1i.cloudfront.net/custom/car-model-photo/original/2019-honda-hr-v-front-5b7fcb948d264.jpg" alt="corolla"/>;
-        case 'Audi A6':
+        case 'Audi A6 2020':
             return <img src="https://s.aolcdn.com/dims-global/dims3/GLOB/legacy_thumbnail/640x400/quality/80/https://s.aolcdn.com/commerce/autodata/images/USC90AUC021A021001.jpg" alt="audia6"/>;
     }
 };
@@ -309,6 +311,7 @@ class Form extends Component {
                                             >
                                                 <DatePickerInput
                                                     id="date-picker-input-id"
+                                                    labelText=""
                                                     className="some-class"
                                                     pattern="d{1,2}/d{4}"
                                                     placeholder="dd/mm/yyyy"
@@ -316,6 +319,7 @@ class Form extends Component {
                                                 />
                                                 <DatePickerInput
                                                     id="date-picker-input-id-2"
+                                                    labelText=""
                                                     className="some-class"
                                                     pattern="d{1,2}/d{4}"
                                                     placeholder="dd/mm/yyyy"
@@ -328,14 +332,15 @@ class Form extends Component {
                                         </p>
                                         <div className="hora-input">
                                             <TimePicker
-                                                id="time-picker" //this must change
+                                                id="time-picker1"
                                                 hideLabel={ false }
                                                 invalidText="Ingresa una hora"
+                                                //onClick={ this.onTimeChange }
                                                 onChange={ this.onTimeChange }
                                             >
                                             </TimePicker>
                                             <TimePicker
-                                                id="time-picker"
+                                                id="time-picker2"
                                                 hideLabel={ false }
                                                 invalidText="Ingresa una hora"
                                                 onChange={ this.onTimeChange2 }
@@ -353,7 +358,7 @@ class Form extends Component {
                                             invalidText="A valid value is required"
                                             items={ this.state.cars
                                                 .filter(c => c.suc === this.state.selectedOptionSuc)
-                                                .map(c => ({ id: c.id_car, text: c.name })) }
+                                                .map(c => ({ id: c.id_car, text: c.name  + ' ' + c.modelo })) }
                                             itemToString={ item => { if (typeof item === 'string') { return item; } return item ? item.text : ''; } }
                                             onChange={ this.onCarChange }
                                         />
@@ -363,7 +368,7 @@ class Form extends Component {
                                     </div>
                                     <div className="submitRentar">
                                         <Button className="submit_button"
-                                            kind="tertiary" onClick={ (event) => this.handleSubmit(event) } >
+                                            kind="secondary" onClick={ (event) => this.handleSubmit(event) } >
                                                 Rentar!
                                         </Button>
                                     </div>

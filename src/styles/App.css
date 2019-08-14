@@ -79,7 +79,7 @@ h2, h4 {
 }
 
 p.form-datos {
-    margin: 2rem 0 0 2rem;
+    margin: 2rem 0 1rem 2rem;
     color: white;
 }
 
@@ -220,7 +220,7 @@ p.form-contact {
 
 .car-name {
     flex-grow: 1;
-    margin-top: 4.5rem;
+    margin-top: 3.5rem;
     margin-right: 2rem;
 }
 
@@ -263,15 +263,6 @@ div.car-image{
 
 .form-label {
     color: white !important;
-}
-
-.align-button {
-    text-align: right;
-}
-
-.align-button button {
-    margin: 0 10px;
-    min-width: 120px;
 }
 
 #list {
@@ -319,10 +310,6 @@ div.car-image{
 
     .mail-form-panel {
         min-height: unset;
-    }
-
-    .align-button {
-        text-align: center;
     }
 
     .footer {

@@ -114,6 +114,17 @@ p.form-contact {
     width: 70%;
 }
 
+.checkboxes {
+    margin: 2rem 0 0 2rem;
+    width: 70%;
+    color: white;
+}
+
+.servicios {
+    margin-bottom: 1rem;
+    display:inline-block;
+}
+
 .labelFilePurple {
     color: #b84dff !important;
     text-align: center;

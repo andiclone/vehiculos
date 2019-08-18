@@ -15,6 +15,8 @@ import swal from 'sweetalert';
 import Loading from './Loading';
 //import Reservations from './Reservations';
 import moment from 'moment';
+//import Stripe from 'stripe';
+
 
 let minDate = (new Date().getDate() + 1) + '/' + (new Date().getMonth() + 1) + '/' + new Date().getFullYear();
 let maxDate = new Date().getDate() + '/' + (new Date().getMonth() + 2) + '/' + new Date().getFullYear();
@@ -26,6 +28,45 @@ const APP_VIEWS = {
 };
 
 const debug = require('debug')('rentacar');
+
+//const stripe = Stripe('sk_test_WghhYknY2IWRQsbIxCvDpZHb00uPoV06in');
+
+//stripe.setTimeout(20000); // in ms (this is 20 seconds)
+
+// Create a new customer and then a new charge for that customer:
+/* stripe.customers
+    .create({
+        email: 'foo-customer@example.com',
+    })
+    .then((customer) => {
+        return stripe.customers.createSource(customer.id, {
+            source: 'tok_visa',
+        });
+    }); */
+/* .then((source) => {
+        return stripe.charges.create({
+            amount: 1600,
+            currency: 'usd',
+            customer: source.customer,
+        });
+    })
+    .then((charge) => {
+    // New charge created on a new customer
+    })
+    .catch((err) => {
+    // Deal with an error
+    }); */
+/* 
+stripe.charges.create({
+    amount: 100,
+    currency: 'mxn',
+    source: 'tok_amex', // obtained with Stripe.js
+    description: 'Charge for jenny.rosen@example.com',
+}, function(err, charge) {
+    // asynchronously called
+});
+       */
+
 
 const DisplayImage = ({ selectedOptionCar }) => {
     switch (selectedOptionCar) {
@@ -60,6 +101,8 @@ class Form extends Component {
             sucs: [],
             cars: [],
             cars_by_suc: [],
+            silla: 0,
+            gps: 0,
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onCarChange = this.onCarChange.bind(this);
@@ -67,6 +110,8 @@ class Form extends Component {
         this.onTimeChange = this.onTimeChange.bind(this);
         this.onTimeChange2 = this.onTimeChange2.bind(this);
         this.calculateTotal = this.calculateTotal.bind(this);
+        this.onSillaSelected = this.onSillaSelected.bind(this);
+        this.onGPSSelected = this.onGPSSelected.bind(this);
     }
 
     componentDidMount() {
@@ -138,6 +183,24 @@ class Form extends Component {
         this.setState({ selectedOptionTimeEnd: event.target.value });
     }
 
+    onSillaSelected(event) {
+        const target = event.target;
+        if (target.checked) {
+            this.setState({ silla: 100 }); 
+        } else { 
+            this.setState({ silla: 0 }); 
+        }
+    }
+
+    onGPSSelected(event) {
+        const target = event.target;
+        if (target.checked) {
+            this.setState({ gps: 300 }); 
+        } else { 
+            this.setState({ gps: 0 }); 
+        }
+    }
+
     calculateTotal() {
         let total = 0;
         let tiempoRenta = 0;
@@ -172,7 +235,6 @@ class Form extends Component {
         if ((this.state.fechaRenta / 24) > 6) {
             total -= this.state.cars[this.state.selectedOptionCarId - 1].precio;
         }
-        //this.setState({ totalRenta: total });
         return total;
     }
     
@@ -182,10 +244,9 @@ class Form extends Component {
             car_id: this.state.selectedOptionCarId,
             fecha_inicio: this.state.selectedOptionDateStartFormatted + ' ' + this.state.selectedOptionTimeStart,
             fecha_fin: this.state.selectedOptionDateEndFormatted + ' ' + this.state.selectedOptionTimeEnd,
-            total: this.calculateTotal(), //this.state.total, 
+            total: this.calculateTotal() + this.state.gps + this.state.silla, 
             pagado: 0, //ahorita siempre sera 0 hasta implementar pago
         };
-
         this.setState({
             ...this.setState,
             app_view: APP_VIEWS.LOADING,
@@ -264,7 +325,6 @@ class Form extends Component {
                                                         <SelectItem value="1" text={ this.state.sucs.map(sucs => sucs.name)[0] } />
                                                         <SelectItem value="2" text={ this.state.sucs.map(sucs => sucs.name)[1] } />
                                                         <SelectItem value="3" text={ this.state.sucs.map(sucs => sucs.name)[2] } />
-                                                        <SelectItem value="4" text={ this.state.sucs.map(sucs => sucs.name)[3] } />
                                                     </SelectItemGroup>
                                                 </select>
                                             </div>
@@ -290,7 +350,6 @@ class Form extends Component {
                                                         <SelectItem value="1" text={ this.state.sucs.map(sucs => sucs.name)[0] } />
                                                         <SelectItem value="2" text={ this.state.sucs.map(sucs => sucs.name)[1] } />
                                                         <SelectItem value="3" text={ this.state.sucs.map(sucs => sucs.name)[2] } />
-                                                        <SelectItem value="4" text={ this.state.sucs.map(sucs => sucs.name)[3] } />
                                                     </SelectItemGroup>
                                                 </select>
                                             </div>
@@ -347,6 +406,27 @@ class Form extends Component {
                                             >
                                             </TimePicker>
                                         </div>
+                                        <form className="checkboxes">
+                                            <label className="servicios">Por favor escoja si necesita un servicio extra</label>
+                                            <br/>
+                                            <label>
+                                            GPS
+                                                <input
+                                                    name="gps"
+                                                    type="checkbox"
+                                                    value={ this.state.gps }
+                                                    onChange={ this.onGPSSelected } />
+                                            </label>
+                                            <br />
+                                            <label>
+                                            Silla para niños
+                                                <input
+                                                    name="silla"
+                                                    type="checkbox"
+                                                    value={ this.state.silla }
+                                                    onChange={ this.onSillaSelected } />
+                                            </label>
+                                        </form>
                                     </div>
                                 </div>
                                 <div className="car-model">
